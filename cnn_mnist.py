@@ -31,8 +31,6 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=1000, shuffle=True)
 dataiter = iter(trainloader)
 images, labels = next(dataiter)
 
-# Mostrar imagens
-imshow(utils.make_grid(images))
 
 # Definindo a arquitetura da CNN para MNIST
 class CNN(nn.Module):
@@ -60,20 +58,12 @@ class CNN(nn.Module):
         x = self.fc2(x)
         return x
 
-    def generate_images(self, model, device, dataloader, num_images=5):
-        model.eval()
-        dataiter = iter(dataloader)
-        images, labels = next(dataiter)
-        images, labels = images.to(device), labels.to(device)
-        
-        with torch.no_grad():
-            outputs = model(images)
-            _, predicted = torch.max(outputs, 1)
-        
-        # Mostrar algumas imagens geradas pela CNN
-        imshow(utils.make_grid(images[:num_images].cpu()))
-        print('Predicted: ', ' '.join('%5s' % predicted[j].item() for j in range(num_images)))
-
+def generate_images(model, device, dataloader):
+    model.eval()
+    dataiter = iter(dataloader)
+    images, labels = next(dataiter)
+    images, labels = images.to(device), labels.to(device)
+    return images
 
 # Inicializando o modelo, função de perda e otimizador
 model = CNN()
@@ -126,14 +116,29 @@ torch.save(model.state_dict(), model_path)
 print(f'Model weights saved to {model_path}')
 """
 
-# Função para gerar imagens com a CNN treinada
-
-"""
 # Carregar os pesos do modelo salvo
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(device)
 loaded_model = CNN()
 loaded_model.load_state_dict(torch.load(model_path))
 loaded_model.to(device)
 
-# Gerar imagens com o modelo carregado
-generate_images(loaded_model, device, testloader)
-"""
+
+for i in range(0, 5000):
+    sample = generate_images(loaded_model, device, testloader)
+
+    # Mover o tensor para a CPU e dessormalizar
+    sample = sample.cpu()  # Mover para a CPU
+    sample = sample / 2 + 0.5  # Dessormalizar
+
+    # Converter para numpy e mostrar a imagem
+    np_sample = sample.numpy()
+
+    # Mostrar a primeira imagem no lote gerado
+    plt.imshow(np.transpose(np_sample[0], (1, 2, 0)), cmap='gray')
+    plt.axis('off')
+    plt.savefig('images_cnn/image_cnn{}'.format(i), bbox_inches='tight', pad_inches=0)
+    plt.close()
+
+
+

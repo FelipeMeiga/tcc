@@ -1,0 +1,9 @@
+fid/
+cnn/
+epochs/
+data/
+images_mnist/
+images_vae/
+images_cnn/
+screenshots/
+__pycache__/
