@@ -7,3 +7,5 @@ images_vae/
 images_cnn/
 screenshots/
 __pycache__/
+gan_mnist/
+epochs_gan/
