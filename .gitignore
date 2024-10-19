@@ -9,3 +9,4 @@ screenshots/
 __pycache__/
 gan_mnist/
 epochs_gan/
+images_gan/
