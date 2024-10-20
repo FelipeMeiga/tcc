@@ -10,3 +10,4 @@ __pycache__/
 gan_mnist/
 epochs_gan/
 images_gan/
+images_convgan/
