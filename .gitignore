@@ -11,3 +11,5 @@ gan_mnist/
 epochs_gan/
 images_gan/
 images_convgan/
+epochs_vae/
+epochs_vae_conv/
